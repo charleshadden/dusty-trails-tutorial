@@ -4,6 +4,15 @@
 [ext_resource type="Texture2D" uid="uid://d0djok8y1fmuk" path="res://Assets/Player/Player Front Sheet.png" id="1_xhfnw"]
 [ext_resource type="Texture2D" uid="uid://bkn51u0pped7v" path="res://Assets/Player/Player Side Sheet.png" id="3_dewec"]
 [ext_resource type="Texture2D" uid="uid://d2j6cf5ctielj" path="res://Assets/Player/Player Back Sheet.png" id="4_5ixxa"]
+[ext_resource type="Script" uid="uid://dwoe0u6u8j6mw" path="res://Scripts/HealthBar.gd" id="5_nn08x"]
+[ext_resource type="Script" uid="uid://crnueryoa7ccf" path="res://Scripts/Stamina.gd" id="6_52ee3"]
+[ext_resource type="Texture2D" uid="uid://b6wahuhdh6mbg" path="res://Assets/Icons/shard_01i.png" id="7_52ee3"]
+[ext_resource type="Script" uid="uid://c8yyu4cvml4vy" path="res://GUI/AmmoAmount.gd" id="7_miouo"]
+[ext_resource type="FontFile" uid="uid://lxeddhw7kru1" path="res://Assets/Font/ARCADECLASSIC.TTF" id="8_bhhdu"]
+[ext_resource type="Texture2D" uid="uid://c4xvnv66nrhov" path="res://Assets/Icons/potion_02c.png" id="9_yoq75"]
+[ext_resource type="Texture2D" uid="uid://c165g8lnh74xn" path="res://Assets/Icons/potion_02b.png" id="10_ksbbd"]
+[ext_resource type="Script" uid="uid://dw78e6hkthf0p" path="res://GUI/HealthAmount.gd" id="10_o3h8g"]
+[ext_resource type="Script" uid="uid://cy26gprqi8lpi" path="res://GUI/StaminaAmount.gd" id="12_1e7my"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_27dlu"]
 
@@ -592,6 +601,7 @@ animations = [{
 
 [node name="Player" type="CharacterBody2D" unique_id=1260066739]
 script = ExtResource("1_kyqiw")
+speed = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=928194079]
 shape = SubResource("CapsuleShape2D_27dlu")
@@ -601,5 +611,249 @@ sprite_frames = SubResource("SpriteFrames_27dlu")
 animation = &"attack_side"
 frame = 5
 frame_progress = 1.0
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=842009524]
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1401849984]
+
+[node name="HealthBar" type="ColorRect" parent="UI" unique_id=1357351775]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -25.0
+offset_right = 105.0
+offset_bottom = -15.0
+grow_vertical = 0
+color = Color(0.24538207, 0.22114086, 0.16973859, 0.41568628)
+script = ExtResource("5_nn08x")
+
+[node name="Value" type="ColorRect" parent="UI/HealthBar" unique_id=1168876135]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -49.0
+offset_top = -4.0
+offset_right = 49.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.6431373, 0.87058824, 0.4745098, 1)
+
+[node name="StaminaBar" type="ColorRect" parent="UI" unique_id=2001358568]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = -15.0
+offset_right = 105.0
+offset_bottom = -5.0
+grow_vertical = 0
+color = Color(0.24538207, 0.22114086, 0.16973859, 0.41568628)
+script = ExtResource("6_52ee3")
+
+[node name="Value" type="ColorRect" parent="UI/StaminaBar" unique_id=281865300]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -49.0
+offset_top = -4.0
+offset_right = 49.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.21568628, 0.4862745, 0.61960787, 1)
+
+[node name="AmmoAmount" type="ColorRect" parent="UI" unique_id=952103153]
+offset_left = 5.0
+offset_top = 8.0
+offset_right = 45.0
+offset_bottom = 28.0
+color = Color(0.22745098, 0.22352941, 0.20784314, 0.41568628)
+script = ExtResource("7_miouo")
+
+[node name="Icon" type="Sprite2D" parent="UI/AmmoAmount" unique_id=1752615434]
+position = Vector2(10, 10)
+texture = ExtResource("7_52ee3")
+
+[node name="Value" type="Label" parent="UI/AmmoAmount" unique_id=2099906032]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -13.0
+offset_bottom = 13.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HealthAmount" type="ColorRect" parent="UI" unique_id=623963846]
+offset_left = 50.0
+offset_top = 8.0
+offset_right = 90.0
+offset_bottom = 28.0
+color = Color(0.22745098, 0.22352941, 0.20784314, 0.41568628)
+script = ExtResource("10_o3h8g")
+
+[node name="Icon" type="Sprite2D" parent="UI/HealthAmount" unique_id=2060333279]
+position = Vector2(10, 10)
+texture = ExtResource("9_yoq75")
+
+[node name="Value" type="Label" parent="UI/HealthAmount" unique_id=209353653]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -13.0
+offset_bottom = 13.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StaminaAmount" type="ColorRect" parent="UI" unique_id=921012180]
+offset_left = 96.0
+offset_top = 8.0
+offset_right = 136.0
+offset_bottom = 28.0
+color = Color(0.22745098, 0.22352941, 0.20784314, 0.41568628)
+script = ExtResource("12_1e7my")
+
+[node name="Icon" type="Sprite2D" parent="UI/StaminaAmount" unique_id=711802670]
+position = Vector2(10, 10)
+texture = ExtResource("10_ksbbd")
+
+[node name="Value" type="Label" parent="UI/StaminaAmount" unique_id=1346640464]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -19.0
+offset_top = -13.0
+offset_bottom = 13.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 20
+text = "0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="XP" type="ColorRect" parent="UI" unique_id=927062183]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = -38.0
+offset_right = -5.0
+offset_bottom = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0.22745098, 0.22352941, 0.20784314, 0.41568628)
+
+[node name="Label" type="Label" parent="UI/XP" unique_id=877997137]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_top = -12.0
+offset_right = 26.0
+offset_bottom = 12.0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 15
+text = "XP:"
+vertical_alignment = 1
+
+[node name="Value" type="Label" parent="UI/XP" unique_id=1372351942]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -12.0
+offset_right = -4.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 15
+text = "0/100"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="Level" type="ColorRect" parent="UI" unique_id=595608343]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = -20.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 0
+grow_vertical = 0
+color = Color(0.22745098, 0.22352941, 0.20784314, 0.41568628)
+
+[node name="Label" type="Label" parent="UI/Level" unique_id=1131853277]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 5.0
+offset_top = -12.0
+offset_right = 53.0
+offset_bottom = 12.0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 15
+text = "Level: "
+vertical_alignment = 1
+
+[node name="Value" type="Label" parent="UI/Level" unique_id=565080806]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = -12.0
+offset_right = -4.0
+offset_bottom = 12.0
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("8_bhhdu")
+theme_override_font_sizes/font_size = 15
+text = "1"
+horizontal_alignment = 2
+vertical_alignment = 1
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
