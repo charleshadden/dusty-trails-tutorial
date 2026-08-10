@@ -25,6 +25,12 @@ var stamina = 100
 var max_stamina = 100
 var regen_stamina = 5
 
+# Bullet & attack variables
+var bullet_damage = 30
+var bullet_reload_time = 1000
+var bullet_fired_time = 0.5
+var last_bullet_time := 0
+
 # Pickups
 var ammo_pickup = 13
 var health_pickup = 2
@@ -75,9 +81,10 @@ func _physics_process(delta):
 func _input(event):
 	#input event for our attacking, i.e. our shooting
 	if event.is_action_pressed("ui_attack"):
+		fire_bullet()
 		#attacking/shooting anim
 		is_attacking = true
-		var animation  = "attack_" + returned_direction(new_direction)
+		animation = "attack_" + returned_direction(new_direction)
 		animation_sprite.play(animation)
 	#using health consumables
 	elif event.is_action_pressed("ui_consume_health"):
@@ -93,6 +100,28 @@ func _input(event):
 			stamina = min(stamina + 50, max_stamina)
 			stamina_updated.emit(stamina, max_stamina)      
 			stamina_pickups_updated.emit(stamina_pickup)
+
+func fire_bullet():
+	if ammo_pickup <= 0:
+		return
+
+	var now = Time.get_ticks_msec()
+	if now - last_bullet_time < bullet_reload_time:
+		return
+
+	var bullet_direction = new_direction.normalized()
+	if bullet_direction == Vector2.ZERO:
+		bullet_direction = Vector2.DOWN
+
+	var bullet = Global.bullet_scene.instantiate()
+	bullet.global_position = global_position + bullet_direction * 14.0
+	bullet.direction = bullet_direction
+	bullet.damage = bullet_damage
+	get_tree().current_scene.add_child(bullet)
+
+	ammo_pickup -= 1
+	ammo_pickups_updated.emit(ammo_pickup)
+	last_bullet_time = now
 
 # Animation Direction
 func returned_direction(direction : Vector2):
