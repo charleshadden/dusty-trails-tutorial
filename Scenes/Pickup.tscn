@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://ci2s7jjojluro"]
+
+[ext_resource type="Texture2D" uid="uid://b1cc16eo5k8g8" path="res://Assets/Icons/crystal_01i.png" id="1_eq05r"]
+[ext_resource type="Script" uid="uid://7wn1j2xili3u" path="res://Scripts/Pickup.gd" id="1_uuccb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uuccb"]
+size = Vector2(15, 14)
+
+[node name="Pickup" type="Area2D" unique_id=887305932]
+script = ExtResource("1_uuccb")
+item = null
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1355534821]
+position = Vector2(-0.5, 0)
+shape = SubResource("RectangleShape2D_uuccb")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1204658892]
+texture = ExtResource("1_eq05r")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
