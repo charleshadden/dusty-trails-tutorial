@@ -6,6 +6,7 @@ extends Node
 @onready var pickups_scene = preload("res://Scenes/Pickup.tscn")
 @onready var enemy_scene = preload("res://Scenes/Enemy.tscn")
 @onready var bullet_scene = preload("res://Scenes/Bullet.tscn")
+@onready var enemy_bullet_scene = preload("res://Scenes/EnemyBullet.tscn")
 
 # Pickups
 enum Pickups { AMMO, STAMINA, HEALTH }
