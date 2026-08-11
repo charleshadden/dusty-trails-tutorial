@@ -10,10 +10,14 @@ extends CharacterBody2D
 @onready var ammo_amount = $UI/AmmoAmount
 @onready var stamina_amount = $UI/StaminaAmount
 @onready var health_amount = $UI/HealthAmount
+@onready var game_over_panel = $UI/GameOver
+@onready var animation_player = $AnimationPlayer
 
 # Player states
 @export var speed = 50.0
+@export var game_over_delay_seconds = 2.0
 var is_attacking = false
+var is_dead = false
 var new_direction = Vector2(0,1) #only move one spaces
 var animation
 
@@ -51,8 +55,12 @@ func _ready():
 	health_pickups_updated.connect(health_amount.update_health_pickup_ui)
 	stamina_pickups_updated.connect(stamina_amount.update_stamina_pickup_ui)
 	
+	animation_sprite.modulate = Color(1,1,1,1)
 # --------------------------------- Movement & Animations -----------------------------------
 func _physics_process(delta):
+	if is_dead:
+		return
+
 	# Get player input (left, right, up/down)
 	var direction: Vector2
 	direction.x = Input.get_action_strength("ui_right") - Input.get_action_strength("ui_left")
@@ -79,6 +87,9 @@ func _physics_process(delta):
 			animation  = "idle_" + returned_direction(new_direction)	
 			
 func _input(event):
+	if is_dead:
+		return
+
 	#input event for our attacking, i.e. our shooting
 	if event.is_action_pressed("ui_attack"):
 		fire_bullet()
@@ -165,6 +176,9 @@ func _on_animated_sprite_2d_animation_finished():
 
 # ------------------------- UI ----------------------------------------------------
 func _process(delta):
+	if is_dead:
+		return
+
 	#regenerates health
 	var updated_health = min(health + regen_health * delta, max_health)
 	if updated_health != health:
@@ -191,3 +205,40 @@ func add_pickup(item):
 		stamina_pickup = stamina_pickup + 1 # + 1 stamina drink
 		stamina_pickups_updated.emit(stamina_pickup)
 		print("stamina val:" + str(stamina_pickup))
+
+
+func hit(damage):
+	if is_dead:
+		return
+
+	health -= damage
+	health = max(health, 0)
+	health_updated.emit(health, max_health)
+	if health > 0:
+		#damage
+		animation_player.play("damage")
+	else:
+		die()
+
+func die():
+	is_dead = true
+	is_attacking = false
+	speed = 0
+	set_process_input(false)
+	game_over_panel.visible = false
+
+	# Show death state on the sprite animation set.
+	if animation_sprite.sprite_frames and animation_sprite.sprite_frames.has_animation("death"):
+		animation_sprite.play("death")
+
+	show_game_over_delayed()
+
+func show_game_over_delayed():
+	await get_tree().create_timer(game_over_delay_seconds).timeout
+	game_over_panel.visible = true
+	if animation_player.has_animation("game_over"):
+		animation_player.play("game_over")
+
+func _on_animation_player_animation_finished(_anim_name):
+	if _anim_name == "damage":
+		animation_sprite.modulate = Color(1,1,1,1)

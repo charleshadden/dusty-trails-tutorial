@@ -7,6 +7,7 @@ extends CharacterBody2D
 @onready var animation_sprite = $AnimatedSprite2D
 @onready var animation_player = $AnimationPlayer
 @onready var timer_node = $Timer
+@onready var ray_cast = $RayCast2D
 
 # Enemy stats
 @export var speed = 50
@@ -33,6 +34,8 @@ signal death
 func _ready():
 	rng.randomize()
 	add_to_group("enemy")
+	if not animation_sprite.animation_finished.is_connected(_on_animated_sprite_2d_animation_finished):
+		animation_sprite.animation_finished.connect(_on_animated_sprite_2d_animation_finished)
 	# Reset color
 	animation_sprite.modulate = Color(1,1,1,1)
 
@@ -55,6 +58,8 @@ func _physics_process(delta):
 	#plays animations only if the enemy is not attacking
 	if !is_attacking:
 		enemy_animations(direction)
+	#Turn RayCast2D to face the direction of movement
+	ray_cast.target_position = direction.normalized() * 50
 
 func _on_timer_timeout():
 	# Calculate the distance of the player's relative position to the enemy's position
@@ -124,7 +129,12 @@ func enemy_animations(move_direction : Vector2):
 func _process(delta):
 	#regenerates our enemy's health
 	health = min(health + health_regen * delta, max_health)
-
+	var target = ray_cast.get_collider()
+	if target != null:
+		if target.is_in_group("player"):
+			is_attacking = true
+			animation = "attack_" + returned_direction(new_direction)
+			animation_sprite.play(animation)
 #will damage the enemy when they get hit
 func hit(damage):
 	health -= damage
@@ -143,13 +153,25 @@ func hit(damage):
 		#Finally, we play the death animation and emit the signal for the spawner.
 		animation_sprite.play("death")
 		death.emit()
+		#drop loot randomly at a 90% chance
+		var drop_roll = rng.randf()
+		if drop_roll < 0.9:
+			var pickup = Global.pickups_scene.instantiate()
+			pickup.item = rng.randi() % 3 #we have three pickups in our enum
+			get_tree().root.get_node("Main/PickupSpawner/SpawnedPickups").call_deferred("add_child", pickup)
+			pickup.position = position
 
 # remove
 func _on_animated_sprite_2d_animation_finished():
 	if animation_sprite.animation == "death":
-		get_tree().queue_delete(self)    
+		queue_free()
 	is_attacking = false
-
+	if animation_sprite.animation.begins_with("attack"):
+		var bullet = Global.enemy_bullet_scene.instantiate()
+		bullet.damage = bullet_damage
+		bullet.direction = new_direction.normalized()
+		bullet.position = player.position + new_direction.normalized() * 8
+		get_tree().root.get_node("Main").add_child(bullet)
 # Reset color
 func _on_animation_player_animation_finished(_anim_name):
 	animation_sprite.modulate = Color(1,1,1,1)

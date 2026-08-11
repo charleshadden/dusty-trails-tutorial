@@ -634,7 +634,7 @@ _data = {
 &"damage": SubResource("Animation_1exfc")
 }
 
-[node name="Enemy" type="CharacterBody2D" unique_id=1260066739]
+[node name="Enemy" type="CharacterBody2D" unique_id=1260066739 groups=["enemy"]]
 script = ExtResource("1_kpr8r")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=928194079]
@@ -650,6 +650,8 @@ autostart = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=710530562]
 libraries/ = SubResource("AnimationLibrary_mo1ky")
+
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=1102578193]
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_player_animation_finished"]
